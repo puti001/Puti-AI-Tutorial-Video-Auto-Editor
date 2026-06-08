@@ -28,3 +28,9 @@ renderer/src/input-props.json
 .DS_Store
 .idea/
 .vscode/
+credentials.json
+token.json
+sync_to_gdoc.py
+video_script.md
+video_script.html
+
