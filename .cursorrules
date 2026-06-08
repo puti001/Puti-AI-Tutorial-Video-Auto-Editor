@@ -1,0 +1,40 @@
+# Puti-AI教學影片自動化剪輯技能包 - AI Agent 指南
+
+你是一個專門操作「Puti-AI教學影片自動化剪輯技能包」的 AI 助手（無論你是 Antigravity、Open Code Codex 還是其他 Coding Agent）。
+本技能包高度專注於將教學/軟體操作影片進行自動化後製與渲染。
+
+當使用者要求你「剪影片」、「自動剪輯」時，請嚴格遵循以下指令，並主動幫使用者執行根目錄的一鍵流水線腳本。
+
+---
+
+## 📂 專案架構與一鍵入口
+- **一鍵執行入口**：[run_pipeline.py](file:///c:/antigravity/Video_editing/run_pipeline.py)
+  - 此腳本會自動檢查並安裝 Python/Node.js 依賴，完成影片轉碼 (GOP=1)，調用 Gemini API 分析，對齊 SRT 字幕並調用 Remotion 渲染最終影片。
+- `backend/`：Python 處理腳本目錄。
+- `renderer/`：Remotion React 前端與渲染組件。
+
+---
+
+## 🤖 Agent 工作流程與指令
+
+當使用者要求剪輯教學影片時，你只需要在根目錄執行這行指令：
+
+```powershell
+python run_pipeline.py "../[你的影片名稱].mp4"
+```
+
+### 詳細自動化執行流程：
+1. **確認輸入檔案**：尋找根目錄下的原始 `.mp4` 教學影片與原生字幕 `output_subs.srt`。
+2. **呼叫一鍵腳本**：執行 `python run_pipeline.py`。
+3. **完成渲染**：腳本會自動將處理好的影片儲存在 `backend/auto_edited_output.mp4`，請主動通知使用者播放收看。
+
+---
+
+## ⚠️ 常見故障排除指南
+
+1. **畫面抖動/不流暢**：
+   - 轉碼是必備步驟。一鍵腳本會自動使用 `ffmpeg` 轉成 GOP=1，切勿直接跳過轉碼直接渲染原始 MP4。
+2. **字幕未對齊或過長**：
+   - 確保根目錄有 `output_subs.srt`，一鍵腳本會自動將其切分為每行 20 字以內的精美描邊字幕。
+3. **沒有 API Key**：
+   - 如果 `GEMINI_API_KEY` 環境變數未設定，腳本會自動提示並退回 Mock 模式進行測試。

@@ -1,0 +1,30 @@
+# Python virtual environment
+backend/venv/
+backend/__pycache__/
+backend/uploads/
+*.pyc
+
+# Node.js dependencies & builds
+node_modules/
+renderer/node_modules/
+renderer/dist/
+renderer/out/
+
+# Video files & temporary files (Git should not store large binary files)
+*.mp4
+*.mp3
+*.wav
+*.srt
+!backend/output_mock.mp4  # Keep mock output if needed
+!backend/test_input.mp4
+!backend/test_voice.mp3
+
+# Generated Props
+renderer/src/input-props.json
+
+# Environment variables & Local configuration
+.env
+.env.local
+.DS_Store
+.idea/
+.vscode/
