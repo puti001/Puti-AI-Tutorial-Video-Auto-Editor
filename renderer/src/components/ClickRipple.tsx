@@ -114,25 +114,7 @@ export const ClickRipple: React.FC<ClickRippleProps> = ({
         }}
       />
 
-      {/* 精緻滑鼠指針圖標 */}
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 24 24"
-        fill="none"
-        style={{
-          transform: `scale(${cursorScale})`,
-          filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.4))",
-        }}
-      >
-        <path
-          d="M4 3l14 10.5-5.5.8L17 20l-3 1.5-4.5-5.7L6 17V3z"
-          fill="#ffffff"
-          stroke="#000000"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-      </svg>
+      {/* 移除虛擬滑鼠圖標以防與原片游標衝突，僅保留同心圓點擊波紋 */}
     </div>
   );
 };

@@ -82,9 +82,19 @@ export const EditorVideo: React.FC<EditorVideoProps> = ({ videoPath, edl, knowle
 
   const zoomProgress = Math.max(0, Math.min(1, zoomSpring));
 
-  // 局部放大 1.15 倍，並往上平滑偏移 30px
-  const videoScale = interpolate(zoomProgress, [0, 1], [1, 1.15]);
-  const videoTranslateY = interpolate(zoomProgress, [0, 1], [0, -30]);
+  // 智慧變焦中心點定位 (SmartZoom Origin)
+  let zoomOriginX = 960;
+  let zoomOriginY = 540;
+  if (currentSegIndex === 1) {
+    zoomOriginX = 500;
+    zoomOriginY = 320; // 步驟二操作重點區：左側磁碟選取與分析區域
+  } else if (currentSegIndex === 3) {
+    zoomOriginX = 1300;
+    zoomOriginY = 500; // 步驟四操作重點區：右側大檔案與篩選區域
+  }
+
+  // 局部放大 1.3 倍，畫面將以操作中心進行智慧變焦，無須手動平移
+  const videoScale = interpolate(zoomProgress, [0, 1], [1, 1.3]);
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000000" }}>
@@ -96,7 +106,8 @@ export const EditorVideo: React.FC<EditorVideoProps> = ({ videoPath, edl, knowle
             width: "100%",
             height: "100%",
             objectFit: "contain",
-            transform: `scale(${videoScale}) translateY(${videoTranslateY}px)`,
+            transformOrigin: `${zoomOriginX}px ${zoomOriginY}px`,
+            transform: `scale(${videoScale})`,
           }}
         />
       </AbsoluteFill>

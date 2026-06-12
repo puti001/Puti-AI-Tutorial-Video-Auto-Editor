@@ -1,6 +1,7 @@
 import React from "react";
 import { spring, interpolate } from "remotion";
 import { ClickRipple } from "./ClickRipple";
+import { MagicPen } from "./MagicPen";
 
 export interface ActionItem {
   time: number;
@@ -20,10 +21,10 @@ export const KeystrokeOverlay: React.FC<KeystrokeOverlayProps> = ({
   fps,
 }) => {
   const currentTime = frame / fps;
-  const showDuration = 75; // 顯示 2.5 秒 (30fps)
+  const showDuration = 150; // 顯示 5.0 秒 (30fps)
 
-  // 尋找當前應該顯示的 action
-  const activeAction = actions.find((action) => {
+  // 逆向尋找最後一個已經開始的 action，以支援新動作立即打斷並覆蓋舊動作
+  const activeAction = [...actions].reverse().find((action) => {
     const actionFrame = Math.round(action.time * fps);
     return frame >= actionFrame && frame < actionFrame + showDuration;
   });
@@ -73,18 +74,37 @@ export const KeystrokeOverlay: React.FC<KeystrokeOverlayProps> = ({
   // 判斷是否需要繪製滑鼠點擊波紋
   const isClickAction = isMouse && displayText.includes("點擊");
   
-  // 根據點擊文字智慧對應畫面上的坐標 (1920x1080)
+  // 判斷是否為提示/解說引導動作，觸發黃色魔法筆消失墨水特效
+  const isGuideAction = displayText.includes("提示") || displayText.includes("解說") || text.includes("💡") || text.includes("⚠️");
+  
+  // 根據動作內容智慧對應畫面上的坐標 (1920x1080)
   let rippleX = 960;
   let rippleY = 540;
+  
   if (displayText.includes("啟動")) {
     rippleX = 960;
-    rippleY = 565; // "啟動 Gemini Spark" 按鈕
-  } else if (displayText.includes("測驗答案")) {
+    rippleY = 565;
+  } else if (displayText.includes("選擇資料夾") || displayText.includes("選擇Open Code")) {
+    rippleX = 400;
+    rippleY = 320; // 左上選擇資料夾區域
+  } else if (displayText.includes("分析")) {
     rippleX = 600;
-    rippleY = 730; // 簡報測驗選項位置
-  } else if (displayText.includes("AI搜尋")) {
-    rippleX = 720;
-    rippleY = 620; // AI 搜尋按鈕
+    rippleY = 320; // 分析按鈕區域
+  } else if (displayText.includes("篩選") || displayText.includes("下拉選單")) {
+    rippleX = 850;
+    rippleY = 320; // 篩選下拉選單區域
+  } else if (displayText.includes("勾選") || displayText.includes("多個檔案")) {
+    rippleX = 1350;
+    rippleY = 400; // 右側大檔案列表區域
+  } else if (displayText.includes("刪除")) {
+    rippleX = 1450;
+    rippleY = 700; // 右下刪除按鈕區域
+  } else if (displayText.includes("確認關閉") || displayText.includes("二次確認")) {
+    rippleX = 960;
+    rippleY = 600; // 彈出對話框確定按鈕區域
+  } else if (displayText.includes("返回上一層")) {
+    rippleX = 320;
+    rippleY = 320; // 返回上一層按鈕區域
   }
 
   return (
@@ -97,6 +117,16 @@ export const KeystrokeOverlay: React.FC<KeystrokeOverlayProps> = ({
           x={rippleX}
           y={rippleY}
           background={activeAction.background}
+        />
+      )}
+
+      {/* 智慧特效：黃色魔法筆消失墨水軌跡 */}
+      {isGuideAction && (
+        <MagicPen
+          localFrame={localFrame}
+          fps={fps}
+          x={rippleX}
+          y={rippleY}
         />
       )}
 

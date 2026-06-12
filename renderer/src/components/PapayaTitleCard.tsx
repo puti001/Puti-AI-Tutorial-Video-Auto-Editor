@@ -20,13 +20,14 @@ export const PapayaTitleCard: React.FC<PapayaTitleCardProps> = ({
   fps,
   knowledgePointsCount = 0,
 }) => {
-  // 找出當前影格落在哪個 segment，且該 segment 必須有 title
-  const currentSegIndex = mappedSegments.findIndex(
+  // 逆向尋找當前影格落在哪個最新的 segment
+  const reversedIndex = [...mappedSegments].reverse().findIndex(
     (seg) =>
       frame >= seg.finalStartFrame &&
       frame < seg.finalStartFrame + seg.durationFrames
   );
-
+  
+  const currentSegIndex = reversedIndex !== -1 ? (mappedSegments.length - 1 - reversedIndex) : -1;
   const currentSeg = currentSegIndex !== -1 ? mappedSegments[currentSegIndex] : null;
 
   if (!currentSeg || !currentSeg.title) {
@@ -39,7 +40,7 @@ export const PapayaTitleCard: React.FC<PapayaTitleCardProps> = ({
   const totalSteps = knowledgePointsCount || titledSegments.length || 1;
 
   const localFrame = frame - currentSeg.finalStartFrame;
-  const introDuration = 90; // 顯示 3 秒 (30fps)
+  const introDuration = 150; // 顯示 5 秒 (30fps)
 
   if (localFrame > introDuration) {
     return null;

@@ -206,9 +206,17 @@ def run_gemini_pipeline(video_path: str):
         
     except Exception as e:
         print(f"[ERROR] 呼叫 Gemini 失敗: {str(e)}")
+        if 'response' in locals() and response and hasattr(response, 'text'):
+            failed_log = os.path.join(backend_dir, "temp_failed_response.txt")
+            try:
+                with open(failed_log, "w", encoding="utf-8") as f_err:
+                    f_err.write(response.text)
+                print(f"[DEBUG] 已將原始 Response 寫入至 {failed_log}")
+            except Exception as write_err:
+                print(f"[DEBUG] 寫入 Response 失敗: {str(write_err)}")
         if os.path.exists(temp_audio):
             os.remove(temp_audio)
-        return
+        sys.exit(1)
 
     # 清除本地臨時音訊
     if os.path.exists(temp_audio):

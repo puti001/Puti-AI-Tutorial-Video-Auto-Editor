@@ -18,7 +18,8 @@ export const StickerOverlay: React.FC<StickerOverlayProps> = ({
   frame,
   fps,
 }) => {
-  const currentSeg = mappedSegments.find(
+  // 逆向尋找最後一個符合的 segment，以支援重疊時顯示最新的
+  const currentSeg = [...mappedSegments].reverse().find(
     (seg) =>
       frame >= seg.finalStartFrame &&
       frame < seg.finalStartFrame + seg.durationFrames
@@ -29,7 +30,7 @@ export const StickerOverlay: React.FC<StickerOverlayProps> = ({
   }
 
   const localFrame = frame - currentSeg.finalStartFrame;
-  const displayDuration = 120; // 顯示 4 秒
+  const displayDuration = 150; // 顯示 5 秒 (30fps)
 
   if (localFrame > displayDuration) {
     return null;
